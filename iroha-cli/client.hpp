@@ -59,7 +59,7 @@ namespace iroha_cli {
         std::string tx_hash);
 
    private:
-    torii::CommandSyncClient command_client_;
+    iroha::torii::CommandSyncClient command_client_;
     torii_utils::QuerySyncClient query_client_;
   };
 }  // namespace iroha_cli

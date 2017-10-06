@@ -92,7 +92,7 @@ class ToriiServiceTest : public testing::Test {
       auto pb_tx_factory =
           std::make_shared<iroha::model::converters::PbTransactionFactory>();
       auto command_service =
-          std::make_unique<torii::CommandService>(pb_tx_factory, tx_processor);
+          std::make_unique<iroha::torii::CommandService>(pb_tx_factory, tx_processor);
 
       //----------- Query Service ----------
       auto qpf = std::make_unique<iroha::model::QueryProcessingFactory>(
@@ -106,7 +106,7 @@ class ToriiServiceTest : public testing::Test {
       auto pb_query_resp_factory =
           std::make_shared<iroha::model::converters::PbQueryResponseFactory>();
 
-      auto query_service = std::make_unique<torii::QueryService>(
+      auto query_service = std::make_unique<iroha::torii::QueryService>(
           pb_query_factory, pb_query_resp_factory, qpi);
 
       //----------- Server run ----------------
@@ -159,7 +159,7 @@ TEST_F(ToriiServiceTest, StatusWhenTxWasNotReceivedBlocking) {
     iroha::protocol::TxStatusRequest tx_request;
     tx_request.set_tx_hash(tx_hashes.at(i));
     iroha::protocol::ToriiResponse toriiResponse;
-    torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
+    iroha::torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
 
     ASSERT_EQ(toriiResponse.tx_status(),
               iroha::protocol::TxStatus::NOT_RECEIVED);
@@ -192,7 +192,7 @@ TEST_F(ToriiServiceTest, StatusWhenBlocking) {
     payload->set_tx_counter(i);
     payload->set_creator_account_id("accountA");
 
-    auto stat = torii::CommandSyncClient(Ip, Port).Torii(new_tx);
+    auto stat = iroha::torii::CommandSyncClient(Ip, Port).Torii(new_tx);
 
     auto iroha_tx = tx_factory.deserialize(new_tx);
     txs.push_back(*iroha_tx);
@@ -211,7 +211,7 @@ TEST_F(ToriiServiceTest, StatusWhenBlocking) {
     iroha::protocol::TxStatusRequest tx_request;
     tx_request.set_tx_hash(tx_hashes.at(i));
     iroha::protocol::ToriiResponse toriiResponse;
-    torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
+    iroha::torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
 
     ASSERT_EQ(
         toriiResponse.tx_status(),
@@ -236,7 +236,7 @@ TEST_F(ToriiServiceTest, StatusWhenBlocking) {
     iroha::protocol::TxStatusRequest tx_request;
     tx_request.set_tx_hash(tx_hashes.at(i));
     iroha::protocol::ToriiResponse toriiResponse;
-    torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
+    iroha::torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
 
     ASSERT_EQ(
         toriiResponse.tx_status(),
@@ -251,7 +251,7 @@ TEST_F(ToriiServiceTest, StatusWhenBlocking) {
     iroha::protocol::TxStatusRequest tx_request;
     tx_request.set_tx_hash(tx_hashes.at(i));
     iroha::protocol::ToriiResponse toriiResponse;
-    torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
+    iroha::torii::CommandSyncClient(Ip, Port).Status(tx_request, toriiResponse);
 
     ASSERT_EQ(toriiResponse.tx_status(),
               iroha::protocol::TxStatus::COMMITTED);
@@ -261,14 +261,14 @@ TEST_F(ToriiServiceTest, StatusWhenBlocking) {
   iroha::protocol::TxStatusRequest last_tx_request;
   last_tx_request.set_tx_hash(tx_hashes.at(TimesToriiBlocking - 1));
   iroha::protocol::ToriiResponse stful_invalid_response;
-  torii::CommandSyncClient(Ip, Port).Status(last_tx_request,
+  iroha::torii::CommandSyncClient(Ip, Port).Status(last_tx_request,
                                             stful_invalid_response);
   ASSERT_EQ(stful_invalid_response.tx_status(),
             iroha::protocol::TxStatus::STATEFUL_VALIDATION_FAILED);
 }
 
 TEST_F(ToriiServiceTest, StatusWhenNonBlocking) {
-  torii::CommandAsyncClient client(Ip, Port);
+  iroha::torii::CommandAsyncClient client(Ip, Port);
   std::atomic_int torii_count{0};  // counts how many times torii was invoked
 
   EXPECT_CALL(*statelessValidatorMock,

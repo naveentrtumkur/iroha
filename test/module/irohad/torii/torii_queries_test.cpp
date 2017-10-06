@@ -71,7 +71,7 @@ class ToriiQueriesTest : public testing::Test {
           std::make_shared<iroha::model::converters::PbTransactionFactory>();
 
       auto command_service =
-          std::make_unique<torii::CommandService>(pb_tx_factory, tx_processor);
+          std::make_unique<iroha::torii::CommandService>(pb_tx_factory, tx_processor);
 
       //----------- Query Service ----------
 
@@ -86,7 +86,7 @@ class ToriiQueriesTest : public testing::Test {
       auto pb_query_resp_factory =
           std::make_shared<iroha::model::converters::PbQueryResponseFactory>();
 
-      auto query_service = std::make_unique<torii::QueryService>(
+      auto query_service = std::make_unique<iroha::torii::QueryService>(
           pb_query_factory, pb_query_resp_factory, qpi);
 
       //----------- Server run ----------------

@@ -22,16 +22,18 @@ limitations under the License.
 #ifndef MAIN_SERVER_RUNNER_HPP
 #define MAIN_SERVER_RUNNER_HPP
 
-namespace torii {
-  class ToriiServiceHandler;
+namespace iroha {
+  namespace torii {
+    class ToriiServiceHandler;
+  }
 }
 
 class ServerRunner {
  public:
   explicit ServerRunner(const std::string &address);
   ~ServerRunner();
-  void run(std::unique_ptr<torii::CommandService> commandService,
-           std::unique_ptr<torii::QueryService> queryService);
+  void run(std::unique_ptr<iroha::torii::CommandService> commandService,
+           std::unique_ptr<iroha::torii::QueryService> queryService);
   void shutdown();
   void waitForServersReady();
 
@@ -41,7 +43,7 @@ class ServerRunner {
   std::condition_variable serverInstanceCV_;
 
   std::string serverAddress_;
-  std::unique_ptr<torii::ToriiServiceHandler> toriiServiceHandler_;
+  std::unique_ptr<iroha::torii::ToriiServiceHandler> toriiServiceHandler_;
 };
 
 #endif  // MAIN_SERVER_RUNNER_HPP

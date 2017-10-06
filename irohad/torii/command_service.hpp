@@ -26,40 +26,44 @@ limitations under the License.
 #include "model/transaction_response.hpp"
 #include "torii/processor/transaction_processor.hpp"
 
-namespace torii {
+namespace iroha {
+  namespace torii {
 
-  /**
-   * Actual implementation of async CommandService.
-   * ToriiServiceHandler::(SomeMethod)Handler calls a corresponding method in
-   * this class.
-   */
-  class CommandService {
-   public:
-    CommandService(
+    /**
+     * Actual implementation of async CommandService.
+     * ToriiServiceHandler::(SomeMethod)Handler calls a corresponding method in
+     * this class.
+     */
+    class CommandService {
+    public:
+      CommandService(
         std::shared_ptr<iroha::model::converters::PbTransactionFactory>
-            pb_factory,
+        pb_factory,
         std::shared_ptr<iroha::torii::TransactionProcessor> txProccesor);
 
-    CommandService(const CommandService&) = delete;
-    CommandService& operator=(const CommandService&) = delete;
-    /**
-     * actual implementation of async Torii in CommandService
-     * @param request - Transaction
-     * @param response - ToriiResponse
-     */
-    void ToriiAsync(iroha::protocol::Transaction const& request,
-                    google::protobuf::Empty& response);
+      CommandService(const CommandService &) = delete;
 
-    void StatusAsync(iroha::protocol::TxStatusRequest const& request,
-                     iroha::protocol::ToriiResponse& response);
+      CommandService &operator=(const CommandService &) = delete;
 
-   private:
-    std::shared_ptr<iroha::model::converters::PbTransactionFactory> pb_factory_;
-    std::shared_ptr<iroha::torii::TransactionProcessor> tx_processor_;
-    std::unordered_map<std::string, iroha::protocol::ToriiResponse>
+      /**
+       * actual implementation of async Torii in CommandService
+       * @param request - Transaction
+       * @param response - ToriiResponse
+       */
+      void ToriiAsync(iroha::protocol::Transaction const &request,
+                      google::protobuf::Empty &response);
+
+      void StatusAsync(iroha::protocol::TxStatusRequest const &request,
+                       iroha::protocol::ToriiResponse &response);
+
+    private:
+      std::shared_ptr<iroha::model::converters::PbTransactionFactory> pb_factory_;
+      std::shared_ptr<iroha::torii::TransactionProcessor> tx_processor_;
+      std::unordered_map<std::string, iroha::protocol::ToriiResponse>
         handler_map_;
-  };
+    };
 
-}  // namespace torii
+  }  // namespace torii
+}  // namespace iroha
 
 #endif  // TORII_COMMAND_SERVICE_HPP

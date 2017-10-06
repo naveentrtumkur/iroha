@@ -18,51 +18,53 @@
 #include "crypto/hash.hpp"
 #include "torii/query_service.hpp"
 
-namespace torii {
+namespace iroha {
+  namespace torii {
 
-  QueryService::QueryService(
+    QueryService::QueryService(
       std::shared_ptr<iroha::model::converters::PbQueryFactory>
-          pb_query_factory,
+      pb_query_factory,
       std::shared_ptr<iroha::model::converters::PbQueryResponseFactory>
-          pb_query_response_factory,
+      pb_query_response_factory,
       std::shared_ptr<iroha::torii::QueryProcessor> query_processor)
       : pb_query_factory_(pb_query_factory),
         pb_query_response_factory_(pb_query_response_factory),
         query_processor_(query_processor) {
-    // Subscribe on result from iroha
-    query_processor_->queryNotifier().subscribe([this](auto iroha_response) {
-      // Find client to respond
-      auto res = handler_map_.find(iroha_response->query_hash.to_string());
-      // Serialize to proto an return to response
-      res->second =
+      // Subscribe on result from iroha
+      query_processor_->queryNotifier().subscribe([this](auto iroha_response) {
+        // Find client to respond
+        auto res = handler_map_.find(iroha_response->query_hash.to_string());
+        // Serialize to proto an return to response
+        res->second =
           pb_query_response_factory_->serialize(iroha_response).value();
 
-    });
-  }
+      });
+    }
 
-  void QueryService::FindAsync(iroha::protocol::Query const& request,
-                               iroha::protocol::QueryResponse& response) {
-    // Get iroha model query
-    auto query = pb_query_factory_->deserialize(request);
+    void QueryService::FindAsync(iroha::protocol::Query const &request,
+                                 iroha::protocol::QueryResponse &response) {
+      // Get iroha model query
+      auto query = pb_query_factory_->deserialize(request);
 
-    if (not query.has_value()) {
-      response.mutable_error_response()->set_reason(
+      if (not query.has_value()) {
+        response.mutable_error_response()->set_reason(
           iroha::protocol::ErrorResponse::NOT_SUPPORTED);
-      return;
-    }
+        return;
+      }
 
-    auto hash = iroha::hash(**query).to_string();
+      auto hash = iroha::hash(**query).to_string();
 
-    if (handler_map_.count(hash) > 0) {
-      // Query was already processed
-      response.mutable_error_response()->set_reason(
+      if (handler_map_.count(hash) > 0) {
+        // Query was already processed
+        response.mutable_error_response()->set_reason(
           iroha::protocol::ErrorResponse::STATELESS_INVALID);
-      return;
-    }
+        return;
+      }
 
-    // Query - response relationship
-    handler_map_.emplace(hash, response);
-    // Send query to iroha
-    query_processor_->queryHandle(query.value());
-  }
-}  // namespace torii
+      // Query - response relationship
+      handler_map_.emplace(hash, response);
+      // Send query to iroha
+      query_processor_->queryHandle(query.value());
+    }
+  }  // namespace torii
+}  // namespace iroha

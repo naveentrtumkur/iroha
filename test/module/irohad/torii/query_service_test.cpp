@@ -19,8 +19,6 @@
 #include <generator/generator.hpp>
 #include "module/irohad/torii/torii_mocks.hpp"
 
-using namespace torii;
-
 using namespace iroha;
 using namespace iroha::torii;
 using namespace iroha::model;

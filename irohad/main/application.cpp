@@ -220,7 +220,7 @@ void Irohad::initTransactionCommandService() {
       std::make_shared<TransactionProcessorImpl>(pcs, stateless_validator);
 
   command_service =
-      std::make_unique<::torii::CommandService>(pb_tx_factory, tx_processor);
+      std::make_unique<iroha::torii::CommandService>(pb_tx_factory, tx_processor);
 
   log_->info("[Init] => command service");
 }
@@ -232,7 +232,7 @@ void Irohad::initQueryService() {
   auto query_processor = std::make_shared<QueryProcessorImpl>(
       std::move(query_proccessing_factory), stateless_validator);
 
-  query_service = std::make_unique<::torii::QueryService>(
+  query_service = std::make_unique<iroha::torii::QueryService>(
       pb_query_factory, pb_query_response_factory, query_processor);
 
   log_->info("[Init] => query service");

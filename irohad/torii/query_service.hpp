@@ -27,49 +27,52 @@ limitations under the License.
 
 #include "logger/logger.hpp"
 
-namespace torii {
-  /**
-   * Actual implementation of async QueryService.
-   * ToriiServiceHandler::(SomeMethod)Handler calls a corresponding method in
-   * this class.
-   */
-  class QueryService {
-   public:
-    QueryService(
+namespace iroha {
+  namespace torii {
+    /**
+     * Actual implementation of async QueryService.
+     * ToriiServiceHandler::(SomeMethod)Handler calls a corresponding method in
+     * this class.
+     */
+    class QueryService {
+    public:
+      QueryService(
         std::shared_ptr<iroha::model::converters::PbQueryFactory>
-            pb_query_factory,
+        pb_query_factory,
         std::shared_ptr<iroha::model::converters::PbQueryResponseFactory>
-            pb_query_response_factory,
+        pb_query_response_factory,
         std::shared_ptr<iroha::torii::QueryProcessor> query_processor);
 
-    QueryService(const QueryService &) = delete;
-    QueryService &operator=(const QueryService &) = delete;
+      QueryService(const QueryService &) = delete;
 
-    /**
-     * actual implementation of async Find in QueryService
-     * @param request - Query
-     * @param response - QueryResponse
-     */
-    void FindAsync(iroha::protocol::Query const &request,
-                   iroha::protocol::QueryResponse &response);
+      QueryService &operator=(const QueryService &) = delete;
 
-   private:
-    std::shared_ptr<iroha::model::converters::PbQueryFactory> pb_query_factory_;
-    std::shared_ptr<iroha::model::converters::PbQueryResponseFactory>
+      /**
+       * actual implementation of async Find in QueryService
+       * @param request - Query
+       * @param response - QueryResponse
+       */
+      void FindAsync(iroha::protocol::Query const &request,
+                     iroha::protocol::QueryResponse &response);
+
+    private:
+      std::shared_ptr<iroha::model::converters::PbQueryFactory> pb_query_factory_;
+      std::shared_ptr<iroha::model::converters::PbQueryResponseFactory>
         pb_query_response_factory_;
-    std::shared_ptr<iroha::torii::QueryProcessor> query_processor_;
+      std::shared_ptr<iroha::torii::QueryProcessor> query_processor_;
 
-    std::unordered_map<std::string, iroha::protocol::QueryResponse&>
+      std::unordered_map<std::string, iroha::protocol::QueryResponse &>
         handler_map_;
 
-    std::unordered_map<std::string, iroha::protocol::QueryResponse>
+      std::unordered_map<std::string, iroha::protocol::QueryResponse>
         old_queries_;
 
 
-    logger::Logger log_;
+      logger::Logger log_;
 
-  };
+    };
 
-}  // namespace torii
+  }  // namespace torii
+}  // namespace iroha
 
 #endif  // TORII_QUERY_SERVICE_HPP
