@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef IROHA_ORDERING_GATE_TRANSPORT_H
 #define IROHA_ORDERING_GATE_TRANSPORT_H
 

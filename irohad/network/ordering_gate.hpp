@@ -45,7 +45,7 @@ namespace iroha {
 
       virtual ~OrderingGate() = default;
     };
-  }//namespace network
-}// namespace iroha
+  }  //namespace network
+}  // namespace iroha
 
 #endif //IROHA_ORDERING_SERVICE_HPP

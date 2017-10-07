@@ -44,7 +44,7 @@ namespace torii_utils {
       stub_->AsyncFind(&context_, query, &completionQueue_)
     );
 
-    using State = network::UntypedCall<iroha::torii::ToriiServiceHandler>::State;
+    using State = iroha::network::UntypedCall<iroha::torii::ToriiServiceHandler>::State;
 
     rpc->Finish(&response, &status_, (void *)static_cast<int>(State::ResponseSent));
 
