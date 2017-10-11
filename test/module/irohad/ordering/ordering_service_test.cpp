@@ -57,8 +57,6 @@ class OrderingServiceTest : public OrderingTest {
     client->SendTransaction(&context, iroha::protocol::Transaction(), &reply);
   }
 
-  void shutdown() override { OrderingTest::shutdown(); }
-
   ordering::MockOrderingGate *fake_gate;
   std::unique_ptr<iroha::ordering::proto::OrderingService::Stub> client;
   std::condition_variable cv;

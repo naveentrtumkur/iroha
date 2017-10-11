@@ -25,8 +25,10 @@ using namespace iroha::ordering;
 using namespace iroha::model;
 using namespace iroha::network;
 using namespace framework::test_subscriber;
+using namespace std::chrono_literals;
 
 using ::testing::_;
+using ::testing::InvokeWithoutArgs;
 
 class OrderingGateTest : public OrderingTest {
  public:
@@ -41,18 +43,28 @@ class OrderingGateTest : public OrderingTest {
 
   std::shared_ptr<OrderingGateImpl> gate_impl;
   MockOrderingService *fake_service;
+  std::condition_variable cv;
+  std::mutex m;
 };
 
 TEST_F(OrderingGateTest, TransactionReceivedByServerWhenSent) {
   // Init => send 5 transactions => 5 transactions are processed by server
   EXPECT_CALL(*fake_service, SendTransaction(_, _, _)).Times(5);
 
+  size_t call_count = 0;
+  ON_CALL(*fake_service, SendTransaction(_, _, _))
+      .WillByDefault(InvokeWithoutArgs([&] {
+        ++call_count;
+        cv.notify_one();
+        return grpc::Status::OK;
+      }));
+
   for (size_t i = 0; i < 5; ++i) {
     gate_impl->propagate_transaction(std::make_shared<Transaction>());
   }
 
-  // Ensure that server processed the transactions
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  std::unique_lock<std::mutex> lock(m);
+  cv.wait_for(lock, 10s, [&] { return call_count == 5; });
 }
 
 TEST_F(OrderingGateTest, ProposalReceivedByGateWhenSent) {
