@@ -31,7 +31,7 @@ grpc::Status OrderingGateTransportGrpc::onProposal(
 
   model::Proposal proposal(transactions);
   proposal.height = request->height();
-  subscriber_->onProposal(std::move(proposal));
+  subscriber_.lock()->onProposal(std::move(proposal));
 
   return grpc::Status::OK;
 }

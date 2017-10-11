@@ -44,7 +44,7 @@ namespace iroha {
                          subscriber) override;
 
      private:
-      std::shared_ptr<iroha::network::OrderingGateNotification> subscriber_;
+      std::weak_ptr<iroha::network::OrderingGateNotification> subscriber_;
       std::unique_ptr<proto::OrderingService::Stub> client_;
       model::converters::PbTransactionFactory factory_;
       logger::Logger log_;
